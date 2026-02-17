@@ -9,13 +9,51 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation group: 'org.springframework', name: 'spring-web', version: '7.0.4'
-    implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.19'
-    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.42'
-}
+dependencies { /* =========================
+       🌱 Spring MVC (웹 핵심)
+       ========================= */
+    implementation "org.springframework:spring-webmvc:7.0.4"
+    implementation "org.springframework:spring-context:7.0.4"
+
+    /* =========================
+       🚀 내장 톰캣 (Boot 아님)
+       ========================= */
+    compileOnly "jakarta.servlet:jakarta.servlet-api:6.1.0"
+    implementation "org.apache.tomcat.embed:tomcat-embed-core:11.0.2"
+    implementation "org.apache.tomcat.embed:tomcat-embed-websocket:11.0.2"
+
+    /* =========================
+       🔄 JSON 변환 (Controller ↔ JSON)
+       ========================= */
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.18.2"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2"
+
+    /* =========================
+       🗄 MyBatis + DB
+       ========================= */
+    implementation "org.mybatis:mybatis:3.5.19"
+    implementation "org.mybatis:mybatis-spring:3.0.4"
+    runtimeOnly "com.mysql:mysql-connector-j:9.2.0"
+    implementation "com.zaxxer:HikariCP:6.2.1"
+
+    /* =========================
+       🧾 로깅
+       ========================= */
+    implementation "org.slf4j:slf4j-api:2.0.16"
+    runtimeOnly "ch.qos.logback:logback-classic:1.5.12"
+
+    /* =========================
+       ✨ Lombok
+       ========================= */
+    compileOnly "org.projectlombok:lombok:1.18.42"
+    annotationProcessor "org.projectlombok:lombok:1.18.42"
+
+    /* =========================
+       🧪 테스트
+       ========================= */
+    testImplementation platform("org.junit:junit-bom:5.10.0")
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.springframework:spring-test:7.0.4"
 
 test {
     useJUnitPlatform()
