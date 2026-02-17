@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.koreait'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation group: 'org.springframework', name: 'spring-web', version: '7.0.4'
+    implementation group: 'org.mybatis', name: 'mybatis', version: '3.5.19'
+    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.42'
+}
+
+test {
+    useJUnitPlatform()
+}
