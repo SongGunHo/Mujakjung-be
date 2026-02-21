@@ -1,10 +1,12 @@
 package org.koreait;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HolleController {
-    public static void main(String[] args) {
-        System.out.println(" 수정아 사랑해 나랑 결혼 하자 ");
+    @GetMapping("/home")
+    public String home(){
+        return "home";
     }
 }

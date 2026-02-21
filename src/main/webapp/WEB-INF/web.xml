@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  web.xml 역할:
+  - 톰캣(서블릿 컨테이너)이 웹앱을 올릴 때 읽는 "웹앱 설정 파일"
+  - DispatcherServlet 등록/매핑 (Spring MVC의 프론트 컨트롤러)
+  - 필터 등록 (인코딩 등)
+  - 멀티파트(파일 업로드) 설정
+-->
+
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+                             https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <!--
+      version="6.0" / web-app_6_0.xsd:
+      - Tomcat 10+ (Jakarta EE 9+) 환경에서 사용하는 web.xml 스키마
+      - 예전(javax.*) 시대와 다르게 jakarta.ee 네임스페이스 사용
+    -->
+
+    <!-- =========================
+         1) DispatcherServlet 등록
+         ========================= -->
+    <servlet>
+        <!-- 이 서블릿의 이름(별칭). mapping에서 같은 이름으로 참조 -->
+        <servlet-name>dispatcher</servlet-name>
+
+        <!-- Spring MVC의 핵심: 모든 요청을 먼저 받는 프론트 컨트롤러 -->
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+
+        <!--
+          (init-param) DispatcherServlet 초기화 파라미터
+        -->
+
+        <!--
+          contextClass:
+          - DispatcherServlet이 사용할 WebApplicationContext 구현체 지정
+          - AnnotationConfigWebApplicationContext:
+            XML이 아니라 "자바 설정 클래스(@Configuration)" 기반으로 스프링 컨테이너를 구성
+        -->
+        <init-param>
+            <param-name>contextClass</param-name>
+            <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
+        </init-param>
+
+        <!--
+          contextConfigLocation:
+          - 위 contextClass가 참고할 설정 클래스(들) 지정
+          - 여기서는 org.koreait.global.configs.MvcConfig 를 스프링 설정 클래스로 사용
+          - 보통 MvcConfig 안에:
+            @EnableWebMvc, @ComponentScan, ViewResolver, ResourceHandler 등을 둠
+        -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>org.koreait.global.configs.MvcConfig</param-value>
+        </init-param>
+
+        <!--
+          spring.profiles.active:
+          - 스프링 프로파일 활성화 (예: local/dev/prod)
+          - prod로 두면 @Profile("prod") 설정이나 properties가 적용될 수 있음
+          - 개인 개발 중이면 local/dev로 바꿔서 쓰는 경우가 많음
+        -->
+        <init-param>
+            <param-name>spring.profiles.active</param-name>
+            <param-value>prod</param-value>
+        </init-param>
+
+        <!--
+          multipart-config:
+          - 파일 업로드(멀티파트 요청) 처리 용량 제한 설정
+          - Spring MVC에서 MultipartResolver와 함께 동작
+          - 단위는 byte
+        -->
+        <multipart-config>
+            <max-file-size>20971520</max-file-size>       <!-- 20MB -->
+            <max-request-size>41943040</max-request-size> <!-- 40MB (전체 요청 크기) -->
+            <file-size-threshold>20971520</file-size-threshold>
+            <!-- threshold:
+                 - 이 크기 이상이면 디스크 임시 파일로 저장되는 방식으로 처리될 수 있음 -->
+        </multipart-config>
+
+        <!--
+          load-on-startup:
+          - 서버 시작 시점에 DispatcherServlet을 미리 초기화
+          - 없으면 첫 요청 들어올 때 늦게 초기화될 수도 있음
+          - 보통 1로 많이 둠
+        -->
+        <!-- <load-on-startup>1</load-on-startup> -->
+    </servlet>
+
+    <!--
+      2) DispatcherServlet URL 매핑
+      - "/" : 모든 요청을 DispatcherServlet이 받게 함 (정석)
+      - 예: /home, /members, /posts 등 전부 스프링 컨트롤러로 진입
+    -->
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- =========================
+         3) 문자 인코딩 필터 등록
+         ========================= -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+
+        <!-- 요청/응답 인코딩을 UTF-8로 고정해 한글 깨짐 방지 -->
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+
+        <!-- 보통 이것도 같이 많이 둠 (요청에 강제 적용) -->
+        <!--
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        -->
+    </filter>
+
+    <!--
+      4) 필터 적용 범위
+      - "/*" : 모든 요청에 필터 적용
+    -->
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>
