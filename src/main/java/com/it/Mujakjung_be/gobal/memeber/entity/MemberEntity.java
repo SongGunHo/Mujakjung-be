@@ -2,6 +2,9 @@
 package com.it.Mujakjung_be.gobal.memeber.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 회원 정보를 저장하는 JPA 엔티티 클래스
@@ -9,6 +12,9 @@ import jakarta.persistence.*;
  */
 @Entity //  이 클래스가 JPA 엔티티임을 선언 (테이블과 매핑)
 @Table(name = "member") // DB 테이블 이름 지정
+@Setter
+@Getter
+@NoArgsConstructor
 public class MemberEntity {
 
     @Id // 기본키(PK) 지정
@@ -33,7 +39,5 @@ public class MemberEntity {
      * - JPA가 리플렉션으로 객체 생성할 때 사용
      * - protected 또는 public 이어야 함
      */
-    protected MemberEntity(){
 
-    }
 }
