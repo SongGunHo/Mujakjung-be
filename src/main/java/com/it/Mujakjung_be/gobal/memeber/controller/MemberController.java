@@ -31,6 +31,11 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/test")
+    public String test(){
+        return "테스트 성공";
+    }
+
 
 
 
