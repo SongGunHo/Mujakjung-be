@@ -1,6 +1,8 @@
 package com.it.Mujakjung_be.gobal.memeber.controller;
 
 import com.it.Mujakjung_be.gobal.memeber.dto.JoinRequest;
+import com.it.Mujakjung_be.gobal.memeber.dto.LoginRequest;
+import com.it.Mujakjung_be.gobal.memeber.dto.LoginResponse;
 import com.it.Mujakjung_be.gobal.memeber.repository.MemberRepository;
 import com.it.Mujakjung_be.gobal.memeber.service.MemberService;
 import jakarta.validation.Valid;
@@ -17,19 +19,17 @@ public class MemberController {
 
     @PostMapping("/join")
     public ResponseEntity<String> join(@RequestBody JoinRequest request){
-        try {
-            service.save(request);
-            return ResponseEntity.ok("ok");
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage()); // 400
-        }
-
-
-
+        service.save(request);
+        return ResponseEntity.ok("회원 가입 성공");
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request){
 
+        LoginResponse response = service.login(request);
 
+        return ResponseEntity.ok(response);
+    }
 
 
 

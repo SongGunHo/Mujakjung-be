@@ -2,8 +2,10 @@ package com.it.Mujakjung_be.gobal.memeber.service;
 
 import com.it.Mujakjung_be.gobal.memeber.dto.JoinRequest;
 import com.it.Mujakjung_be.gobal.memeber.dto.LoginRequest;
+import com.it.Mujakjung_be.gobal.memeber.dto.LoginResponse;
 import com.it.Mujakjung_be.gobal.memeber.entity.MemberEntity;
 import com.it.Mujakjung_be.gobal.memeber.repository.MemberRepository;
+import com.it.Mujakjung_be.gobal.memeber.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +16,7 @@ public class MemberService {
 
     private final MemberRepository repository;
     private final PasswordEncoder encoder;
+    private final JwtUtil jwtUtil;
 
 
     public void save(JoinRequest request){
@@ -31,14 +34,16 @@ public class MemberService {
     }
 
     //
-    public void login(LoginRequest request){
+    public LoginResponse login(LoginRequest request){
         // 이메일 있는지 없느지 검증
-        MemberEntity en = repository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("이메일이 없습니다"));
+        MemberEntity en = repository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalArgumentException("이메일 또는 비밀 번호가 없습니다 "));
         // 로그인 비밀 번호 검증
         if (!encoder.matches(request.getPassword(), en.getPassword())){
-            throw new IllegalArgumentException("비밀 번호 가 틀렸습니다");
+            throw new IllegalArgumentException("이메일 또는 비밀 번호가 틀렸습니다");
         }
-
+        // JWT 생성
+        String token = jwtUtil.createToken(en.getEmail());
+        return new LoginResponse(token);
     }
 
 }
