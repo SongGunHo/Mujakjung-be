@@ -129,5 +129,8 @@ class MemberApiTest {
                 // (현재 응답이 text/plain이라서 content().string(...)으로 검사하는 게 맞음)
                 .andExpect(content().string("이미 가입된 이메일 입니다"));
     }
+
+
+
 }
 
